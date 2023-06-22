@@ -1,0 +1,4 @@
+
+rootProject.name = "PaynicornSdk"
+include ':youlesdk'
+include ':app'

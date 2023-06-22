@@ -1,0 +1,75 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+android {
+    compileSdk 31
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdk 19
+        targetSdk 31
+        versionCode 104
+        versionName "1.0.4"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    afterEvaluate {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    from components.release
+                    groupId = 'com.game.youlesdk' //groupId 随便取
+                    artifactId = 'youlesdk'  //artifactId 随便取
+                    version = '1.0.0'
+                }
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation(fileTree("libs"));
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    /******************************paysdk支付************************************/
+    api "com.transsion.pay:paysdk:1.5.1.9"
+
+
+//    /******************************applovin广告源************************************/
+//    implementation 'com.applovin:applovin-sdk:+'
+//    implementation("androidx.lifecycle:lifecycle-process:2.2.0")
+
+    /******************************google广告源************************************/
+    def lifecycle_version = "2.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation 'com.google.android.gms:play-services-ads:22.0.0'
+    /******************************nativetemplates************************************/
+//    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.google.android.gms:play-services-ads:20.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.errorprone:error_prone_annotations:2.16'
+}
