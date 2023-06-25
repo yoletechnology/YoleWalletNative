@@ -66,6 +66,7 @@ public class YouleSdkMgr {
     private String CP_ID = "";
     private String API_KEY = "";
     private String rewardedAdId = "";
+    private boolean isMakeText = false;
     public static YouleSdkMgr getsInstance() {
         if(YouleSdkMgr._instance == null)
         {
@@ -76,7 +77,7 @@ public class YouleSdkMgr {
     private YouleSdkMgr() {
         Log.e(TAG,"YouleSdkMgr");
     }
-    public void initAd(Context var1, HashMap<String,String> var2,boolean isDebugger)
+    public void initAd(Context var1, HashMap<String,String> var2,boolean isDebugger,boolean isMakeText)
     {
 
         list = var2;
@@ -90,7 +91,7 @@ public class YouleSdkMgr {
         var = var1;
         MobileAdsMgr.getsInstance().initAd(var1);
         info = new PhoneInfo(var1);
-
+        this.isMakeText = isMakeText;
         if(isDebugger == true)
         {
             PaySdkMgr.getsInstance().setTestMode();
@@ -130,7 +131,10 @@ public class YouleSdkMgr {
 
     public void  makeText(Activity var1,String text)
     {
-        Toast.makeText(var1,text, Toast.LENGTH_LONG).show();
+        if(this.isMakeText == true)
+        {
+            Toast.makeText(var1,text, Toast.LENGTH_LONG).show();
+        }
     }
     public void  startPay(Activity var1,PayMode payMode,CallBackFunction callBack) throws Exception {
 
