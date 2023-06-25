@@ -134,6 +134,7 @@ public class YouleSdkMgr {
         if(this.isMakeText == true)
         {
             Toast.makeText(var1,text, Toast.LENGTH_LONG).show();
+            Log.i(TAG,text);
         }
     }
     public void  startPay(Activity var1,PayMode payMode,CallBackFunction callBack) throws Exception {
@@ -142,7 +143,6 @@ public class YouleSdkMgr {
         if(isPlayerIng == true)
         {
             makeText(var1,"正在支付中");
-            Log.i(TAG,"YouleSdkMgr.startPay 正在支付中");
             callBack.onCallBack(false);
             return;
         }
@@ -156,7 +156,6 @@ public class YouleSdkMgr {
         if(isAd == false && (tempData == null || tempData.smsOptimalAmount <= 0))
         {
             makeText(var1,"没有合适的价格");
-            Log.i(TAG,"YouleSdkMgr.startPay 没有合适的价格");
             isAd = true;
         }
 
@@ -192,7 +191,6 @@ public class YouleSdkMgr {
                 {
                     isVSAFail = true;
                     makeText(var1,"短信支付失败调用广告");
-                    Log.i(TAG,"支付失败调用广告");
                     MobileAdsMgr.getsInstance().showRewardedAd( new CallBackFunction() {
 
                         @Override
@@ -220,32 +218,31 @@ public class YouleSdkMgr {
         startPayEntity.amount =   tempData.smsOptimalAmount;
         startPayEntity.countryCode = tempData.countryCode;
         startPayEntity.currency = tempData.currency;
-        startPayEntity.orderNum =this.payOrderNum + (new Date().getTime());//order number
-        startPayEntity.payMode = payMode.ordinal();//order number
+        startPayEntity.orderNum =API_KEY + "_" + (new Date().getTime());//order number
+        startPayEntity.payMode = (payMode == payMode.PAY_MODE_Native ? StartPayEntity.PAY_MODE_SMS:payMode.ordinal());//order number
 
-         PaySdkMgr.getsInstance().startPay(var1,startPayEntity, new StartPayCallBack() {
+        makeText(var1,"短信支付参数：amount："+tempData.smsOptimalAmount+";countryCode:"+tempData.countryCode+";currency："+ tempData.currency+";orderNum:"+startPayEntity.orderNum+";payMode:"+startPayEntity.payMode);
+        PaySdkMgr.getsInstance().startPay(var1,startPayEntity, new StartPayCallBack() {
 
             @Override
             public void onOrderCreated(OrderEntity orderEntity) {
-                Log.i(TAG,"PaySdkMgr.startPay.onOrderCreated:"+orderEntity);
+                Log.i(TAG,"PaySdkMgr.startPay.onOrderCreated:");
             }
 
             @Override
             public void onPaySuccess(OrderEntity orderEntity) {
                 makeText(var1,"短信支付结果：Success");
-                Log.i(TAG,"PaySdkMgr.startPay.onPaySuccess:"+orderEntity);
                 callBack.onCallBack(true);
             }
 
             @Override
             public void onPaying(OrderEntity orderEntity) {
-                Log.i(TAG,"PaySdkMgr.startPay.onPaying:"+orderEntity);
+                Log.i(TAG,"PaySdkMgr.startPay.onPaying:");
             }
 
             @Override
             public void onPayFail(int code, OrderEntity orderEntity) {
                 makeText(var1,"短信支付结果："+code);
-                Log.i(TAG,"PaySdkMgr.startPay.onPayFail:"+orderEntity);
                 callBack.onCallBack(false);
             }
         });
