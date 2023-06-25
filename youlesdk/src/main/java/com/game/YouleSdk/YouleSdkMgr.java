@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.widget.Toast;
 
 //import com.applovin.mediation.MaxAdFormat;
 //import com.applovin.mediation.ads.MaxAdView;
@@ -127,9 +128,16 @@ public class YouleSdkMgr {
         return tempData;
     }
 
+    public void  makeText(Activity var1,String text)
+    {
+        Toast.makeText(var1,text, Toast.LENGTH_LONG).show();
+    }
     public void  startPay(Activity var1,PayMode payMode,CallBackFunction callBack) throws Exception {
+
+        makeText(var1,"startPay");
         if(isPlayerIng == true)
         {
+            makeText(var1,"正在支付中");
             Log.i(TAG,"YouleSdkMgr.startPay 正在支付中");
             callBack.onCallBack(false);
             return;
@@ -143,6 +151,7 @@ public class YouleSdkMgr {
 
         if(isAd == false && (tempData == null || tempData.smsOptimalAmount <= 0))
         {
+            makeText(var1,"没有合适的价格");
             Log.i(TAG,"YouleSdkMgr.startPay 没有合适的价格");
             isAd = true;
         }
@@ -150,6 +159,11 @@ public class YouleSdkMgr {
 
         if( isAd == true || (this.isVSAFail == true && payMode == PayMode.PAY_MODE_Native))
         {
+            if((this.isVSAFail == true && payMode == PayMode.PAY_MODE_Native))
+            {
+                makeText(var1,"本地模式，并且已经支付失败过");
+            }
+            makeText(var1,"直接显示激励广告");
             MobileAdsMgr.getsInstance().showRewardedAd(new CallBackFunction() {
 
                 @Override
@@ -173,11 +187,13 @@ public class YouleSdkMgr {
                 if(data == false)
                 {
                     isVSAFail = true;
+                    makeText(var1,"短信支付失败调用广告");
                     Log.i(TAG,"支付失败调用广告");
                     MobileAdsMgr.getsInstance().showRewardedAd( new CallBackFunction() {
 
                         @Override
                         public void onCallBack(boolean data) {
+                            makeText(var1,"广告支付结果"+data);
                             isPlayerIng = false;
                             callBack.onCallBack(data);
                             LoadingDialog.getInstance(var1).hide();//显示
@@ -186,6 +202,7 @@ public class YouleSdkMgr {
                 }
                 else
                 {
+                    makeText(var1,"短信支付成功");
                     isPlayerIng = false;
                     callBack.onCallBack(true);
                     LoadingDialog.getInstance(var1).hide();//显示
@@ -211,6 +228,7 @@ public class YouleSdkMgr {
 
             @Override
             public void onPaySuccess(OrderEntity orderEntity) {
+                makeText(var1,"短信支付结果：Success");
                 Log.i(TAG,"PaySdkMgr.startPay.onPaySuccess:"+orderEntity);
                 callBack.onCallBack(true);
             }
@@ -221,7 +239,8 @@ public class YouleSdkMgr {
             }
 
             @Override
-            public void onPayFail(int i, OrderEntity orderEntity) {
+            public void onPayFail(int code, OrderEntity orderEntity) {
+                makeText(var1,"短信支付结果："+code);
                 Log.i(TAG,"PaySdkMgr.startPay.onPayFail:"+orderEntity);
                 callBack.onCallBack(false);
             }
